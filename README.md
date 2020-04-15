@@ -1,3 +1,3 @@
 # Punctuation Restoration
 
-Algorithm for punctuation restoration. It uses the BERT model.
+Code for punctuation restoration. It uses the BERT model.
