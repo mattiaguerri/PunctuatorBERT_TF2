@@ -60,7 +60,7 @@ def create_data_loader(X, y, shuffle, batch_size):
     return data_loader
 
 
-def preProcessing(inpFileName):
+def preProcessingScriber(inpFileName):
 
     setType = ""
     if inpFileName.find("Train") != -1:
@@ -81,13 +81,24 @@ def preProcessing(inpFileName):
     numLin = len(inpFile.readlines())
     inpFile.seek(0)
 
+    storeWord = []
+    storeWord_1 = []
     for i in range(numLin):
         line = inpFile.readline()
 
         # print('\n', i + 1)
 
         splits = line.split(' ')
+
         # print(splits)
+
+        # remove empty elements
+        while "" in splits:
+            splits.remove("")
+
+        # splits might contain only one element, which is '\n'
+        if len(splits) == 1 and splits[0] == '\n':
+            continue
 
         # remove the new line character
         if splits[-1] == '\n':
@@ -96,67 +107,120 @@ def preProcessing(inpFileName):
         if splits[-1][-1] == '\n':
             splits[-1] = splits[-1][0:-1]
 
-        # remove empty elements
-        while "" in splits:
-            splits.remove("")
+        # in case previous splits was only one word, insert that word
+        if len(storeWord) != 0:
+            splits.insert(0, storeWord[0])
+            storeWord = []
 
-        # if splits only has one element
-        if len(splits) == 1:
-
-            if splits[0][-1] != ',' and splits[0][-1] != '.' and splits[0][-1] != '?':
-                outFile.write(splits[0] + ',O' + '\n')
-            elif splits[0][-1] == ',':
-                outFile.write(splits[0][0:-1] + ',COMMA' + '\n')
-            elif splits[0][-1] == '.':
-                outFile.write(splits[0][0:-1] + ',PERIOD' + '\n')
-            elif splits[0][-1] == '?':
-                outFile.write(splits[0][0:-1] + ',QUESTION' + '\n')
+        # at this point, you could have splits with only one word
+        # store the word and use it in the next sentence.
+        if len(splits) == 1 and splits[0] != '\n':
+            storeWord.insert(0, splits[0])
             continue
 
-        # if splits has more than one element
-        else:
-            for j in range(len(splits)):
+        # if splits only has less than 2 elements:
+        if len(splits) < 2:
+            print('\n\n !!! splits only has one element. !!! \n\n')
+            sys.exit()
 
-                # you could have something like this: 'car,engine'
-                if splits[j][0:-1].find(',') != -1:
-                    subSplits = splits[j].split(',')
-                    outFile.write(subSplits[0] + ',COMMA' + '\n')
-                    outFile.write(subSplits[1] + ',O' + '\n')
-                    continue
+        # write the output
+        # introduce first a possible word from previous sentence
+        if len(storeWord_1) != 0:
+            splits.insert(0, storeWord_1[0])
+            storeWord_1 = []
+        for j in range(len(splits) - 1):
+            if splits[j] == '<b>':
+                continue
+            if splits[j + 1] != '<b>':
+                outFile.write(splits[j] + ',' + 'O' + '\n')
+            elif splits[j + 1] == '<b>':
+                outFile.write(splits[j] + ',' + 'PERIOD' + '\n')
 
-                if splits[j][-1] != ',' and splits[j][-1] != '.' and splits[j][-1] != '?':
-                    outFile.write(splits[j] + ',O' + '\n')
-                elif splits[j][-1] == ',':
-                    outFile.write(splits[j][0:-1] + ',COMMA' + '\n')
-                elif splits[j][-1] == '.':
-                    outFile.write(splits[j][0:-1] + ',PERIOD' + '\n')
-                elif splits[j][-1] == '?':
-                    outFile.write(splits[j][0:-1] + ',QUESTION' + '\n')
+        # process the last word with the next sentence
+        if splits[-1] != '<b>':
+            storeWord_1.append(splits[-1])
+
+    # insert the very last word
+    if len(storeWord_1) != 0:
+        outFile.write(storeWord_1[0] + ',' + 'O' + '\n')
+
     outFile.close()
 
-    # Check the output.
 
-    inpFile = open(outFileName, "r")
+def preProcessingIWSLT12(inpFileName):
+
+    setType = ""
+    if inpFileName.find("Train") != -1:
+        setType = "train"
+    elif inpFileName.find("Valid") != -1:
+        setType = "valid"
+    elif inpFileName.find("Test") != -1:
+        setType = "test"
+
+    outFileName = './Data/' + setType + 'Set_02.txt'
+
+    print('\n', inpFileName)
+    print(outFileName, '\n')
+
+    inpFile = open(inpFileName, "r")
+    outFile = open(outFileName, "w")
 
     numLin = len(inpFile.readlines())
     inpFile.seek(0)
 
     for i in range(numLin):
+    # for i in range(2):
+        line = inpFile.readline()
+
+        # print('\n', i + 1)
+
+        splits = line.split(' ')
+
+        # remove empty elements
+        while "" in splits:
+            splits.remove("")
+
+        # splits might contain only one element, which is '\n'
+        if len(splits) == 1 and splits[0] == '\n':
+            continue
+
+        # remove the new line character
+        if splits[-1] == '\n':
+            splits = splits[0:-1]
+        # remove new line char in case is contained in the last element
+        if splits[-1][-1] == '\n':
+            splits[-1] = splits[-1][0:-1]
+
+        # write the output
+        for j in range(len(splits)):
+            # check the case in which we have word, comma, then another word without blank space
+            if splits[j][0:-1].find(",") != -1:
+                foo = splits[j].split(',')
+                outFile.write(foo[0] + ',' + 'COMMA' + '\n')
+                outFile.write(foo[1] + ',' + 'O' + '\n')
+                continue
+            if splits[j][-1] == ',':
+                outFile.write(splits[j][0:-1] + ',' + 'COMMA' + '\n')
+            elif splits[j][-1] == '.':
+                outFile.write(splits[j][0:-1] + ',' + 'PERIOD' + '\n')
+            elif splits[j][-1] == '?':
+                outFile.write(splits[j][0:-1] + ',' + 'QUESTION' + '\n')
+            else:
+                outFile.write(splits[j] + ',' + 'O' + '\n')
+
+    outFile.close()
+
+    # check the output file
+    inpFile = open(outFileName, "r")
+    numLin = len(inpFile.readlines())
+    inpFile.seek(0)
+    for i in range(numLin):
         line = inpFile.readline()
         splits = line.split(',')
-
-        if len(splits) != 2:
-            print('\n\n\nERROR!!!')
-            print('\nLINE: ..... ', i + 1)
-            print(splits)
-            break
-
-
-
-
-
-
-
+        if len(splits) > 2:
+            print("\n\nLine:   ", i+1)
+            print(splits, "\n\n")
+            sys.exit()
 
 
 
