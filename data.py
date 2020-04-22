@@ -2,7 +2,16 @@
 import numpy as np
 import torch
 from torch.utils.data import TensorDataset, DataLoader
+import matplotlib.pyplot as plt
 import sys
+
+
+
+def plot_batch_sizes(ds):
+  batch_sizes = [batch.shape[0] for batch in ds]
+  plt.bar(range(len(batch_sizes)), batch_sizes)
+  plt.xlabel('Batch number')
+  plt.ylabel('Batch size')
 
 
 def load_file(filename):
@@ -48,7 +57,7 @@ def insert_target(x, segment_size):
     return np.array(X)
 
 
-def preprocess_data(data, tokenizer, punctuation_enc, segment_size):
+def process_data(data, tokenizer, punctuation_enc, segment_size):
     X, y = encode_data(data, tokenizer, punctuation_enc)
     X = insert_target(X, segment_size)
     return X, y
