@@ -2,7 +2,7 @@
 import numpy as np
 import tensorflow as tf
 
-from data import load_file, preprocess_data, create_data_loader, preProcessingIWSLT12
+from data import load_file, process_data, create_data_loader, preProcessingIWSLT12
 
 from transformers import BertTokenizer
 from transformers import TFBertForMaskedLM
@@ -29,33 +29,14 @@ if __name__ == '__main__':
         'QUESTION': 3
     }
 
-    vocabSize = 32005
     vocabSize = 30522
     segment_size = 32
-    dropout = 0.3
-    epochs_top = 5
-    iterations_top = 2
-    batch_size_top = 12
-    learning_rate_top = 1e-5
-    epochs_all = 4
-    iterations_all = 3
-    batch_size_all = 256
-    learning_rate_all = 1e-5
     hyperparameters = {
         'vocabSize': vocabSize,
         'segment_size': segment_size,
-        'dropout': dropout,
-        'epochs_top': epochs_top,
-        'iterations_top': iterations_top,
-        'batch_size_top': batch_size_top,
-        'learning_rate_top': learning_rate_top,
-        'epochs_all': epochs_all,
-        'iterations_all': iterations_all,
-        'batch_size_all': batch_size_all,
-        'learning_rate_all': learning_rate_all,
     }
 
-    save_path = 'ModelsFake/{}/'.format(datetime.now().strftime("%Y%m%d_%H%M%S"))
+    save_path = 'ModelsExp/{}/'.format(datetime.now().strftime("%Y%m%d_%H%M%S"))
     os.mkdir(save_path)
     with open(save_path + 'hyperparameters.json', 'w') as f:
         json.dump(hyperparameters, f)
@@ -63,10 +44,10 @@ if __name__ == '__main__':
     print('\nPre-processing data ...')
 
     # name of data with the sentences
-    foo = "IWSLT12"
-    trainSet_01 = 'Data' + foo + '/extractTrain_01.txt'
-    validSet_01 = 'Data' + foo + '/extractValid_01.txt'
-    testSet_01 = 'Data' + foo + '/extractTest_01.txt'
+    data_name = "IWSLT12"
+    trainSet_01 = 'Data' + data_name + '/extractTrain_01.txt'
+    validSet_01 = 'Data' + data_name + '/extractValid_01.txt'
+    testSet_01 = 'Data' + data_name + '/extractTest_01.txt'
 
     # from sentences to list of words+punctuation
     preProcessingIWSLT12(trainSet_01)
@@ -87,9 +68,9 @@ if __name__ == '__main__':
 
     print('\nProcessing data ...')
 
-    X_train, y_train = preprocess_data(data_train, tokenizer, punctuation_enc, segment_size)
+    X_train, y_train = process_data(data_train, tokenizer, punctuation_enc, segment_size)
     y_train = np.asarray(y_train)
-    X_valid, y_valid = preprocess_data(data_valid, tokenizer, punctuation_enc, segment_size)
+    X_valid, y_valid = process_data(data_valid, tokenizer, punctuation_enc, segment_size)
     y_valid = np.asarray(y_valid)
 
     print("\nInitializing model ... ", "\n")
@@ -122,23 +103,23 @@ if __name__ == '__main__':
 
 
 
-    ### BUILD AND TRAIN 1.
-    ### Build a model using the tf.keras.Sequential. Then train the model.
-    ### In this way i train only the top dense layer.
-    batch_size = 20
-    bert = TFBertForMaskedLM.from_pretrained('bert-base-uncased')
-    # print(type(X_train[0, 0]))
-    bert_out = bert(X_train[0:batch_size, ])
-    bert_out_2 = tf.reshape(bert_out, [batch_size, 32 * 30522])
-    bert_out_2 = bert_out_2.numpy()
-    model = tf.keras.Sequential()
-    model.add(tf.keras.layers.Dense(4, kernel_initializer='glorot_uniform'))
-    model.compile(optimizer='adam',
-                  loss=tf.keras.losses.SparseCategoricalCrossentropy(from_logits=True),
-                  metrics=['accuracy'])
-    y_train = np.asarray(y_train)
-    model.fit(bert_out_2, y_train[0:batch_size], epochs=1)
-    print(model.summary())
+    # ### BUILD AND TRAIN 1.
+    # ### Build a model using the tf.keras.Sequential. Then train the model.
+    # ### In this way i train only the top dense layer.
+    # batch_size = 20
+    # bert = TFBertForMaskedLM.from_pretrained('bert-base-uncased')
+    # # print(type(X_train[0, 0]))
+    # bert_out = bert(X_train[0:batch_size, ])
+    # bert_out_2 = tf.reshape(bert_out, [batch_size, 32 * 30522])
+    # bert_out_2 = bert_out_2.numpy()
+    # model = tf.keras.Sequential()
+    # model.add(tf.keras.layers.Dense(4, kernel_initializer='glorot_uniform'))
+    # model.compile(optimizer='adam',
+    #               loss=tf.keras.losses.SparseCategoricalCrossentropy(from_logits=True),
+    #               metrics=['accuracy'])
+    # y_train = np.asarray(y_train)
+    # model.fit(bert_out_2, y_train[0:batch_size], epochs=1)
+    # print(model.summary())
 
 
 
@@ -166,49 +147,5 @@ if __name__ == '__main__':
     # preds = model.predict(foo_X)
     # print(type(preds))
     # print(preds.shape)
-
-
-
-
-
-
-
-    # epochs = 3
-    # dataset = dataset.batch(6)
-    # for epoch in range(epochs):
-    #     for batch in dataset:
-    #         print(batch[0].shape)
-    #     print("End of epoch: ", epoch)
-
-
-
-    # # Train using the dataset pipeline.
-    # bert = TFBertForMaskedLM.from_pretrained('bert-base-uncased')
-    # model = tf.keras.Sequential()
-    # model.add(tf.keras.layers.Dense(4, kernel_initializer='glorot_uniform'))
-    # model.compile(optimizer='adam',
-    #               loss=tf.keras.losses.SparseCategoricalCrossentropy(from_logits=True),
-    #               metrics=['accuracy'])
-    # foo_X = X_train[0:500]
-    # foo_y = y_train[0:500]
-    # dataset = tf.data.Dataset.from_tensor_slices((foo_X, foo_y))
-    # batch_size = 64
-    # epochs = 3
-    # dataset = dataset.batch(batch_size)
-    # for epoch in range(epochs):
-    #     for batch in dataset:
-    #         bert_out = bert(batch[0])
-    #         bert_out_2 = tf.reshape(bert_out, [batch_size, 32 * 30522])
-    #         bert_out_2 = bert_out_2.numpy()
-    #         model.fit(bert_out_2, batch[1], epochs=10)
-    #     print("End of epoch: ", epoch)
-
-
-
-
-
-
-
-
 
 
