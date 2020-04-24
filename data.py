@@ -81,8 +81,8 @@ def preProcessingScriber(inpFileName):
 
     outFileName = './Data/' + setType + 'Set_02.txt'
 
-    print('\n\n', inpFileName)
-    print(outFileName, '\n\n')
+    # print('\n\n', inpFileName)
+    # print(outFileName, '\n\n')
 
     inpFile = open(inpFileName, "r")
     outFile = open(outFileName, "w")
@@ -168,8 +168,8 @@ def preProcessingIWSLT12(inpFileName):
 
     outFileName = './Data/' + setType + 'Set_02.txt'
 
-    print('\n', inpFileName)
-    print(outFileName, '\n')
+    # print('\n', inpFileName)
+    # print(outFileName, '\n')
 
     inpFile = open(inpFileName, "r")
     outFile = open(outFileName, "w")
