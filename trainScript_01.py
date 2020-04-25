@@ -1,5 +1,15 @@
+import os
+# os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3' 
+
 import numpy as np
+
+
+# tf.autograph.set_verbosity(0)
+
+from silence_tensorflow import silence_tensorflow
+silence_tensorflow()  # silence TF warnings
 import tensorflow as tf
+
 
 from data import load_file, process_data, create_data_loader, preProcessingIWSLT12
 
@@ -9,7 +19,6 @@ from transformers import TFBertForMaskedLM
 from model import create_model
 
 from datetime import datetime
-import os
 import json
 
 import sys
@@ -28,16 +37,16 @@ punctuation_enc = {
 }
 
 
-# ### Hyper-parameters
+### Hyper-parameters
 
 
-n = 20
+n = 4
 
 vocab_size = 30522
 segment_size = 32
-batch_size = 10
-train_layer_ind = -2  # 0 for all model, -2 for only top layer
-num_epochs = 2
+batch_size = 128
+train_layer_ind = 0  # 0 for all model, -2 for only top layer
+num_epochs = 20
 
 hyperparameters = {
     'vocab_size': vocab_size,
@@ -45,11 +54,14 @@ hyperparameters = {
     'batch_size': batch_size
 }
 
-
 save_path = 'ModelsExp/{}/'.format(datetime.now().strftime("%Y%m%d_%H%M%S"))
 os.mkdir(save_path)
 with open(save_path + 'hyperparameters.json', 'w') as f:
     json.dump(hyperparameters, f)
+
+
+print('\nPRE-PROCESS AND PROCESS DATA')
+
 
 # name of data with the sentences
 data_name = "IWSLT12"
@@ -66,10 +78,6 @@ data_train = load_file('./Data/trainSet_02.txt')
 data_valid = load_file('./Data/validSet_02.txt')
 data_test = load_file('./Data/testSet_02.txt')
 
-data_train = load_file('./Data/trainSet_02.txt')
-data_valid = load_file('./Data/validSet_02.txt')
-data_test = load_file('./Data/testSet_02.txt')
-
 tokenizer = BertTokenizer.from_pretrained('bert-base-uncased', do_lower_case=True)
 
 X_train, y_train = process_data(data_train, tokenizer, punctuation_enc, segment_size)
@@ -81,21 +89,22 @@ y_valid = np.asarray(y_valid)
 # ### Build the dataset
 
 
-extract_X = X_train[0:n]
-extract_y = y_train[0:n]
+print('\nBUILD THE DATASET')
+
+
+# extract_X = X_train[0:n]
+# extract_y = y_train[0:n]
+extract_X = X_train[0:]
+extract_y = y_train[0:]
 
 dataset = tf.data.Dataset.from_tensor_slices((extract_X, extract_y))
-dataset = dataset.batch(batch_size)
-
-# features, labels = next(iter(dataset))
-# print(type(features))
-# print(type(labels))
-
-# # print(features)
-# print(labels)
+dataset = dataset.shuffle(buffer_size=10000).batch(batch_size)
 
 
 # ### Build the model
+
+
+print('\nBUILD THE MODEL')
 
 
 bert_input = tf.keras.Input(shape=(segment_size), dtype='int32', name='bert_input')
@@ -130,6 +139,10 @@ optimizer = tf.keras.optimizers.Adam(learning_rate=1e-4)
 
 
 # ### Training loop
+
+
+print('\nSTART TRAINING')
+
 
 train_loss_results = []
 train_accuracy_results = []
