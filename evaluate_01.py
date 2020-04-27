@@ -23,7 +23,19 @@ import json
 import sys
 
 
-# In[2]:
+# In[3]:
+
+
+get_ipython().system('ls Models/20200424_165143')
+
+
+# In[4]:
+
+
+checkpoint_path = "Models/20200424_165143/cp-014.ckpt"
+
+
+# In[5]:
 
 
 # punctuation_enc = {
@@ -41,7 +53,7 @@ punctuation_enc = {
 
 # ### Hyper-parameters
 
-# In[3]:
+# In[6]:
 
 
 n = 100
@@ -59,7 +71,7 @@ hyperparameters = {
 }
 
 
-# In[4]:
+# In[7]:
 
 
 # name of data with the sentences
@@ -83,7 +95,7 @@ X_test, y_test = process_data(data_test, tokenizer, punctuation_enc, segment_siz
 y_test = np.asarray(y_test)
 
 
-# In[5]:
+# In[8]:
 
 
 # one hot encode the labels
@@ -92,14 +104,17 @@ y_test = tf.one_hot(y_test, 4, dtype='int64').numpy()
 
 # ### Build the dataset
 
-# In[6]:
+# In[14]:
 
 
 extract_X = X_test[0:n]
 extract_y = y_test[0:n]
 
+extract_X = X_test[0:]
+extract_y = y_test[0:]
 
-# In[7]:
+
+# In[15]:
 
 
 dataset = tf.data.Dataset.from_tensor_slices((extract_X, extract_y))
@@ -108,7 +123,7 @@ dataset = dataset.batch(batch_size)
 
 # ### Build the model
 
-# In[8]:
+# In[16]:
 
 
 # build and compile model
@@ -133,13 +148,7 @@ net.compile(optimizer='adam',
                       ])
 
 
-# In[10]:
-
-
-checkpoint_path = "ModelsExp/20200424_180927/cp-003.ckpt"
-
-
-# In[11]:
+# In[17]:
 
 
 # load the weights
@@ -148,7 +157,7 @@ net.load_weights(checkpoint_path)
 
 # ### Evaluate the model
 
-# In[13]:
+# In[18]:
 
 
 net.evaluate(dataset)

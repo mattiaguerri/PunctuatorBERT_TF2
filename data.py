@@ -1,4 +1,3 @@
-
 import numpy as np
 import torch
 from torch.utils.data import TensorDataset, DataLoader
@@ -6,12 +5,11 @@ import matplotlib.pyplot as plt
 import sys
 
 
-
-def plot_batch_sizes(ds):
-  batch_sizes = [batch.shape[0] for batch in ds]
-  plt.bar(range(len(batch_sizes)), batch_sizes)
-  plt.xlabel('Batch number')
-  plt.ylabel('Batch size')
+# def plot_batch_sizes(ds):
+    # batch_sizes = [batch.shape[0] for batch in ds]
+    # plt.bar(range(len(batch_sizes)), batch_sizes)
+    # plt.xlabel('Batch number')
+    # plt.ylabel('Batch size')
 
 
 def load_file(filename):
@@ -61,12 +59,6 @@ def process_data(data, tokenizer, punctuation_enc, segment_size):
     X, y = encode_data(data, tokenizer, punctuation_enc)
     X = insert_target(X, segment_size)
     return X, y
-
-
-def create_data_loader(X, y, shuffle, batch_size):
-    data_set = TensorDataset(torch.from_numpy(X).long(), torch.from_numpy(np.array(y)).long())
-    data_loader = DataLoader(data_set, batch_size=batch_size, shuffle=shuffle)
-    return data_loader
 
 
 def preProcessingScriber(inpFileName):
@@ -154,6 +146,8 @@ def preProcessingScriber(inpFileName):
         outFile.write(storeWord_1[0] + ',' + 'O' + '\n')
 
     outFile.close()
+    
+    return(outFileName)
 
 
 def preProcessingIWSLT12(inpFileName):
@@ -219,17 +213,19 @@ def preProcessingIWSLT12(inpFileName):
 
     outFile.close()
 
-    # check the output file
-    inpFile = open(outFileName, "r")
-    numLin = len(inpFile.readlines())
-    inpFile.seek(0)
-    for i in range(numLin):
-        line = inpFile.readline()
-        splits = line.split(',')
-        if len(splits) > 2:
-            print("\n\nLine:   ", i+1)
-            print(splits, "\n\n")
-            sys.exit()
+    # # check the output file
+    # inpFile = open(outFileName, "r")
+    # numLin = len(inpFile.readlines())
+    # inpFile.seek(0)
+    # for i in range(numLin):
+        # line = inpFile.readline()
+        # splits = line.split(',')
+        # if len(splits) > 2:
+            # print("\n\nLine:   ", i+1)
+            # print(splits, "\n\n")
+            # sys.exit()
+    
+    return(outFileName)
 
 
 

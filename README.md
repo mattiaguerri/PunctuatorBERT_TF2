@@ -1,3 +1,3 @@
 # Punctuation Restoration
 
-Code for punctuation restoration. It uses the BERT model.
+Code for punctuation restoration. It uses pretrained models (BERT) from Huggingface Transformers.
