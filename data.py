@@ -1,7 +1,7 @@
 import numpy as np
 import torch
 from torch.utils.data import TensorDataset, DataLoader
-import matplotlib.pyplot as plt
+# import matplotlib.pyplot as plt
 import sys
 
 
@@ -20,8 +20,7 @@ def load_file(filename):
 
 def encode_data(data, tokenizer, punctuation_enc):
     """
-    Converts words to (BERT) tokens and punctuation to given encoding.
-    Note that words can be composed of multiple tokens.
+    Words to tokens.
     """
     X = []
     Y = []
@@ -31,6 +30,7 @@ def encode_data(data, tokenizer, punctuation_enc):
         tokens = tokenizer.tokenize(word)
         x = tokenizer.convert_tokens_to_ids(tokens)
         y = [punctuation_enc[punc]]
+        # one word can be encoded in more than one token
         if len(x) > 0:
             if len(x) > 1:
                 y = (len(x)-1)*[0]+y
@@ -41,8 +41,8 @@ def encode_data(data, tokenizer, punctuation_enc):
 
 def insert_target(x, segment_size):
     """
-    Creates segments of surrounding words for each word in x.
-    Inserts a zero token halfway the segment.
+    Creates segment of size segment_size. 
+    The target is in the middle of the segment.
     """
     X = []
     x_pad = x[-((segment_size-1)//2-1):]+x+x[:segment_size//2]
@@ -62,7 +62,9 @@ def process_data(data, tokenizer, punctuation_enc, segment_size):
 
 
 def preProcessingScriber(inpFileName):
-
+    """
+    Preprocessing for proprietory data. 
+    """
     setType = ""
     if inpFileName.find("Train") != -1:
         setType = "train"
@@ -151,7 +153,9 @@ def preProcessingScriber(inpFileName):
 
 
 def preProcessingIWSLT12(inpFileName):
-
+    """
+    Preprocessing for IWSLT12 data. 
+    """
     setType = ""
     if inpFileName.find("Train") != -1:
         setType = "train"
