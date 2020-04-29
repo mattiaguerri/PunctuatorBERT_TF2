@@ -20,7 +20,10 @@ def load_file(filename):
 
 def encode_data(data, tokenizer, punctuation_enc):
     """
-    Words to tokens.
+    Takes in the dataset made of two columns separated by comma.
+    First column is a word, second column is what comes after the word (blank space, comma, period, etc.)
+    Output X, containing the token id of the words.
+    Output y, which contains what there is after the word.
     """
     X = []
     Y = []
@@ -41,8 +44,9 @@ def encode_data(data, tokenizer, punctuation_enc):
 
 def insert_target(x, segment_size):
     """
-    Creates segment of size segment_size. 
-    The target is in the middle of the segment.
+    Restructure x in order to have sequences of length equal to segment_size.
+    Output X, an array with dimensions len(x) * segment_size.
+    In each segment the target is placed in the middle and replaced with a zero.
     """
     X = []
     x_pad = x[-((segment_size-1)//2-1):]+x+x[:segment_size//2]
