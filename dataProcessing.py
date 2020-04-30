@@ -42,6 +42,22 @@ def encode_data(data, tokenizer, punctuation_enc):
     return X, Y
 
 
+def encodeDataInfer(data, tokenizer):
+    """
+    Takes in the data made of sentences, with words separated by blank spaces (no punctuation).
+    Output X, list containing the token id of the words.
+    """
+    X = []
+    for line in data:
+        words = line.split(" ")
+        words[-1] = words[-1].strip()  # get rid of \n at the end of the line
+        for word in words:
+            token = tokenizer.tokenize(word)
+            tokenId = tokenizer.convert_tokens_to_ids(token)
+            X += tokenId
+    return X
+
+
 def insert_target(x, segment_size):
     """
     Restructure x in order to have sequences of length equal to segment_size.
@@ -59,10 +75,10 @@ def insert_target(x, segment_size):
     return np.array(X)
 
 
-def process_data(data, tokenizer, punctuation_enc, segment_size):
-    X, y = encode_data(data, tokenizer, punctuation_enc)
-    X = insert_target(X, segment_size)
-    return X, y
+# def process_data(data, tokenizer, punctuation_enc, segment_size):
+#     X, y = encode_data(data, tokenizer, punctuation_enc)
+#     X = insert_target(X, segment_size)
+#     return X, y
 
 
 def preProcessingScriber(inpFileName):

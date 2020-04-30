@@ -1,0 +1,30 @@
+
+
+==============================================================================================
+
+"Models/20200425_142515/cp-008.ckpt"
+Trained on the extract of IWSLT12.
+Trained the full model.
+Epoch 008, Loss 0.040, Acc 99.896.
+Inferring on extractInfer, model is able to produce space comma period question.
+
+Evaluated on extractTrain:
+Rec_0: 0.9941 - Prec_0: 0.9974 - Rec_1: 0.7928 - Prec_1: 0.9659 - Rec_2: 0.9866 - Prec_2: 0.8258 - Rec_3: 1.0000 - Prec_3: 0.8148
+
+Evaluated on extractTest:
+Rec_0: 0.9750 - Prec_0: 0.9793 - Rec_1: 0.3603 - Prec_1: 0.6806 - Rec_2: 0.8818 - Prec_2: 0.6065 - Rec_3: 0.6207 - Prec_3: 0.3913
+
+==============================================================================================
+
+
+
+
+==============================================================================================
+
+"Models/20200427_094905/cp-006.ckpt"
+Trained on the full IWSLT12.
+Trained the full model.
+Predicts always 0, nothing else.
+
+==============================================================================================
+
