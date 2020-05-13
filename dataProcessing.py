@@ -251,9 +251,3 @@ def preProcessingIWSLT12(inpFileName):
     
     return(outFileName)
 
-
-
-
-
-
-

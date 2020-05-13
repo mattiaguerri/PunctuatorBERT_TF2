@@ -19,12 +19,112 @@ Rec_0: 0.9750 - Prec_0: 0.9793 - Rec_1: 0.3603 - Prec_1: 0.6806 - Rec_2: 0.8818 
 
 
 
+
+==============================================================================================
+
+"Models/20200430_100559/cp-006.ckpt"
+Trained only TOP PART of the model.
+Trained on the full IWSLT12.
+
+Epoch 001: (Training)   Loss: 27.371, Accuracy: 88.609%
+Epoch 002: (Training)   Loss: 23.732, Accuracy: 90.506%
+Epoch 003: (Training)   Loss: 23.307, Accuracy: 90.987%
+Epoch 004: (Training)   Loss: 23.181, Accuracy: 91.253%
+Epoch 005: (Training)   Loss: 22.824, Accuracy: 91.445%
+Epoch 006: (Training)   Loss: 22.712, Accuracy: 91.585%
+Epoch 007: (Training)   Loss: 22.981, Accuracy: 91.684%
+Epoch 008: (Training)   Loss: 22.636, Accuracy: 91.769%
+Epoch 009: (Training)   Loss: 23.494, Accuracy: 91.783%
+Epoch 010: (Training)   Loss: 23.019, Accuracy: 91.883%
+Evaluation on IWSLT12.TALK.train.en.txt.Test_01
+Rec_0: 0.9889 - Prec_0: 0.9536 - Rec_1: 0.4576 - Prec_1: 0.5945 - Rec_2: 0.6017 - Prec_2: 0.8039 - Rec_3: 0.1584 - Prec_3: 0.9275
+
+Same shit but buffer size = 1000000
+Epoch 001: (Training)   Loss: 17.543, Accuracy: 89.410%
+Epoch 002: (Training)   Loss: 17.494, Accuracy: 90.636%
+Epoch 003: (Training)   Loss: 17.705, Accuracy: 90.878%
+Epoch 004: (Training)   Loss: 17.620, Accuracy: 91.088%
+Epoch 005: (Training)   Loss: 17.631, Accuracy: 91.216%
+Epoch 006: (Training)   Loss: 17.946, Accuracy: 91.265%
+
+Same shit but learning rate = 1e-5, buffer size = 500000
+Epoch 001: (Training)   Loss: 1.196, Accuracy: 89.475%
+Epoch 002: (Training)   Loss: 1.104, Accuracy: 90.625%
+Epoch 003: (Training)   Loss: 1.109, Accuracy: 90.929%
+Epoch 004: (Training)   Loss: 1.097, Accuracy: 91.096%
+Epoch 005: (Training)   Loss: 1.088, Accuracy: 91.218%
+Epoch 006: (Training)   Loss: 1.108, Accuracy: 91.267%
+
+==============================================================================================
+
+
+
+
+
 ==============================================================================================
 
 "Models/20200427_094905/cp-006.ckpt"
+Trained the FULL MODEL.
 Trained on the full IWSLT12.
-Trained the full model.
 Predicts always 0, nothing else.
+
+==============================================================================================
+
+
+
+
+==============================================================================================
+
+Models/20200508_085150/
+Trained the FULL MODEL.
+Trained on the full IWSLT12.
+
+vocab_size = 30522
+segment_size = 16
+batch_size = 128
+train_layer_ind = 0
+learat = 1e-5
+
+Epoch 001: (Training)   Loss: 0.147, Accuracy: 95.016%
+Epoch 002: (Training)   Loss: 0.099, Accuracy: 96.542%
+Epoch 003: (Training)   Loss: 0.063, Accuracy: 98.085%
+Epoch 004: (Training)   Loss: 0.032, Accuracy: 99.313%
+Epoch 005: (Training)   Loss: 0.016, Accuracy: 99.847%
+Epoch 006: (Training)   Loss: 0.010, Accuracy: 99.964%
+Epoch 007: (Training)   Loss: 0.008, Accuracy: 99.986%
+Epoch 008: (Training)   Loss: 0.007, Accuracy: 99.991%
+Epoch 009: (Training)   Loss: 0.007, Accuracy: 99.995%
+Epoch 010: (Training)   Loss: 0.006, Accuracy: 99.995%
+
+Evaluated on the full test set.
+loss: 0.3659 - Rec_0: 0.9840 - Prec_0: 0.9799 - Rec_1: 0.6396 - Prec_1: 0.6330 - Rec_2: 0.7388 - Prec_2: 0.7918 - Rec_3: 0.4827 - Prec_3: 0.6190
+
+==============================================================================================
+
+
+
+
+==============================================================================================
+
+20200510_101117
+
+Trained the FULL MODEL.
+Trained on the FULL SCRIBER.
+In this model the output is a vector in R4, instead of a vector in R2, as it should have been!!!
+
+Epoch 001: (Training)   Loss: 0.126, Accuracy: 95.233%
+Epoch 002: (Training)   Loss: 0.094, Accuracy: 95.938%
+Epoch 003: (Training)   Loss: 0.074, Accuracy: 97.018%
+Epoch 004: (Training)   Loss: 0.050, Accuracy: 98.411%
+Epoch 005: (Training)   Loss: 0.030, Accuracy: 99.360%
+Epoch 006: (Training)   Loss: 0.019, Accuracy: 99.770%
+Epoch 007: (Training)   Loss: 0.014, Accuracy: 99.898%
+Epoch 008: (Training)   Loss: 0.012, Accuracy: 99.932%
+Epoch 009: (Training)   Loss: 0.010, Accuracy: 99.953%
+Epoch 010: (Training)   Loss: 0.009, Accuracy: 99.962%
+
+Evaluated on full test set.
+loss: 0.3243 - Rec_0: 0.9651 - Prec_0: 0.9676 - Rec_1: 0.5888 - Prec_1: 0.5705, F1 = 0.5795
 
 ==============================================================================================
 
