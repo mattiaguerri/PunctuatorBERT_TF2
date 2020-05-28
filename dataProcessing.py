@@ -81,9 +81,105 @@ def insert_target(x, segment_size):
 #     return X, y
 
 
-def preProcessingScriber(inpFileName):
+def isNumber(s):
+    try:
+        float(s)
+        return True
+    except ValueError:
+        return False
+
+
+
+
+
+
+def processingIWSLT12(inpFileName):
     """
-    Preprocessing for proprietory data. 
+    Processing for IWSLT12 data. 
+    """
+    setType = ""
+    if inpFileName.find("Train") != -1:
+        setType = "train"
+    elif inpFileName.find("Valid") != -1:
+        setType = "valid"
+    elif inpFileName.find("Test") != -1:
+        setType = "test"
+
+    outFileName = './Data/' + setType + 'Set_02.txt'
+
+    # print('\n', inpFileName)
+    # print(outFileName, '\n')
+
+    inpFile = open(inpFileName, "r")
+    outFile = open(outFileName, "w")
+
+    numLin = len(inpFile.readlines())
+    inpFile.seek(0)
+
+    for i in range(numLin):
+    # for i in range(2):
+        line = inpFile.readline()
+
+        # print('\n', i + 1)
+
+        splits = line.split(' ')
+
+        # remove empty elements
+        while "" in splits:
+            splits.remove("")
+
+        # splits might contain only one element, which is '\n'
+        if len(splits) == 1 and splits[0] == '\n':
+            continue
+
+        # remove the new line character
+        if splits[-1] == '\n':
+            splits = splits[0:-1]
+        # remove new line char in case is contained in the last element
+        if splits[-1][-1] == '\n':
+            splits[-1] = splits[-1][0:-1]
+
+        # write the output
+        for j in range(len(splits)):
+            # check the case in which we have word, comma, then another word without blank space
+            if splits[j][0:-1].find(",") != -1:
+                foo = splits[j].split(',')
+                outFile.write(foo[0] + ',' + 'COMMA' + '\n')
+                outFile.write(foo[1] + ',' + 'O' + '\n')
+                continue
+            if splits[j][-1] == ',':
+                outFile.write(splits[j][0:-1] + ',' + 'COMMA' + '\n')
+            elif splits[j][-1] == '.':
+                outFile.write(splits[j][0:-1] + ',' + 'PERIOD' + '\n')
+            elif splits[j][-1] == '?':
+                outFile.write(splits[j][0:-1] + ',' + 'QUESTION' + '\n')
+            else:
+                outFile.write(splits[j] + ',' + 'O' + '\n')
+
+    outFile.close()
+
+    # # check the output file
+    # inpFile = open(outFileName, "r")
+    # numLin = len(inpFile.readlines())
+    # inpFile.seek(0)
+    # for i in range(numLin):
+        # line = inpFile.readline()
+        # splits = line.split(',')
+        # if len(splits) > 2:
+            # print("\n\nLine:   ", i+1)
+            # print(splits, "\n\n")
+            # sys.exit()
+    
+    return(outFileName)
+
+
+
+
+
+
+def processingScriber00(inpFileName):
+    """
+    Processing proprietary data.
     """
     setType = ""
     if inpFileName.find("Train") != -1:
@@ -172,19 +268,23 @@ def preProcessingScriber(inpFileName):
     return(outFileName)
 
 
-def preProcessingIWSLT12(inpFileName):
+
+
+
+
+def processingOPUS(inpFileName):
     """
-    Preprocessing for IWSLT12 data. 
+    Processing OPUS data. 
     """
     setType = ""
-    if inpFileName.find("Train") != -1:
+    if inpFileName.find("train") != -1 or inpFileName.find("Train") != -1:
         setType = "train"
-    elif inpFileName.find("Valid") != -1:
+    elif inpFileName.find("valid") != -1 or inpFileName.find("Valid") != -1:
         setType = "valid"
-    elif inpFileName.find("Test") != -1:
+    elif inpFileName.find("test") != -1 or inpFileName.find("Test") != -1:
         setType = "test"
 
-    outFileName = './Data/' + setType + 'Set_02.txt'
+    outFileName = './Data/' + setType + 'Data.txt'
 
     # print('\n', inpFileName)
     # print(outFileName, '\n')
@@ -196,13 +296,11 @@ def preProcessingIWSLT12(inpFileName):
     inpFile.seek(0)
 
     for i in range(numLin):
-    # for i in range(2):
+    # for i in range(10):
         line = inpFile.readline()
 
-        # print('\n', i + 1)
-
         splits = line.split(' ')
-
+        
         # remove empty elements
         while "" in splits:
             splits.remove("")
@@ -220,34 +318,201 @@ def preProcessingIWSLT12(inpFileName):
 
         # write the output
         for j in range(len(splits)):
-            # check the case in which we have word, comma, then another word without blank space
-            if splits[j][0:-1].find(",") != -1:
-                foo = splits[j].split(',')
-                outFile.write(foo[0] + ',' + 'COMMA' + '\n')
+            # check the case in which we have word, period, then another word without blank space
+            if splits[j][0:-1].find(".") != -1:
+                foo = splits[j].split('.')
+                outFile.write(foo[0] + ',' + 'PERIOD' + '\n')
                 outFile.write(foo[1] + ',' + 'O' + '\n')
                 continue
-            if splits[j][-1] == ',':
-                outFile.write(splits[j][0:-1] + ',' + 'COMMA' + '\n')
-            elif splits[j][-1] == '.':
+            if splits[j][-1] == '.':
                 outFile.write(splits[j][0:-1] + ',' + 'PERIOD' + '\n')
-            elif splits[j][-1] == '?':
-                outFile.write(splits[j][0:-1] + ',' + 'QUESTION' + '\n')
             else:
                 outFile.write(splits[j] + ',' + 'O' + '\n')
 
     outFile.close()
 
-    # # check the output file
-    # inpFile = open(outFileName, "r")
-    # numLin = len(inpFile.readlines())
-    # inpFile.seek(0)
-    # for i in range(numLin):
-        # line = inpFile.readline()
-        # splits = line.split(',')
-        # if len(splits) > 2:
-            # print("\n\nLine:   ", i+1)
-            # print(splits, "\n\n")
-            # sys.exit()
+    # check the output file
+    inpFile = open(outFileName, "r")
+    numLin = len(inpFile.readlines())
+    inpFile.seek(0)
+    for i in range(numLin):
+        line = inpFile.readline()
+        splits = line.split(',')
+        if len(splits) > 2:
+            print("\n\nLine:   ", i+1)
+            print(splits, "\n\n")
+            sys.exit()
     
     return(outFileName)
 
+
+
+
+
+
+def processingIWSLT17(inpFileName):
+    """
+    Processing IWSLT17 French data. 
+    """
+    setType = ""
+    if inpFileName.find("train") != -1 or inpFileName.find("Train") != -1:
+        setType = "train"
+    elif inpFileName.find("valid") != -1 or inpFileName.find("Valid") != -1:
+        setType = "valid"
+    elif inpFileName.find("test") != -1 or inpFileName.find("Test") != -1:
+        setType = "test"
+
+    outFileName = './Data/' + setType + 'Data.txt'
+
+    # print('\n', inpFileName)
+    # print(outFileName, '\n')
+
+    inpFile = open(inpFileName, "r")
+    outFile = open(outFileName, "w")
+
+    numLin = len(inpFile.readlines())
+    inpFile.seek(0)
+
+    for i in range(numLin):
+    # for i in range(2):
+        line = inpFile.readline()
+
+        splits = line.split(' ')
+        
+        # remove empty elements
+        while "" in splits:
+            splits.remove("")
+
+        # splits might contain only one element, which is '\n'
+        if len(splits) == 1 and splits[0] == '\n':
+            continue
+
+        # remove the new line character
+        if splits[-1] == '\n':
+            splits = splits[0:-1]
+        # remove new line char in case is contained in the last element
+        if splits[-1][-1] == '\n':
+            splits[-1] = splits[-1][0:-1]
+
+        # write the output
+        for j in range(len(splits)):
+            # check if splits[j] is a number
+            if isNumber(splits[j])==True:
+                outFile.write(splits[j] + ',' + 'O' + '\n')
+                continue
+            # check if splits[j] is number+dot
+            if isNumber(splits[j][0:-1])==True:
+                outFile.write(splits[j][0:-1] + ',' + 'PERIOD' + '\n')
+                continue
+            # check the case in which we have word+dot+word.
+            if splits[j][0:-1].find(".") != -1:
+                foo = splits[j].split('.')
+                outFile.write(foo[0] + ',' + 'PERIOD' + '\n')
+                outFile.write(foo[1] + ',' + 'O' + '\n')
+                continue
+            if splits[j][-1] == '.':
+                outFile.write(splits[j][0:-1] + ',' + 'PERIOD' + '\n')
+            else:
+                outFile.write(splits[j] + ',' + 'O' + '\n')
+
+    outFile.close()
+
+    # check the output file
+    inpFile = open(outFileName, "r")
+    numLin = len(inpFile.readlines())
+    inpFile.seek(0)
+    for i in range(numLin):
+        line = inpFile.readline()
+        splits = line.split(',')
+        if len(splits) > 2:
+            print("\n\nLine:   ", i+1)
+            print(splits, "\n\n")
+            sys.exit()
+    
+    return(outFileName)
+
+
+
+
+
+
+def processingScriber01(inpFileName):
+    """
+    Processing proprietary data. 
+    """
+    setType = ""
+    if inpFileName.find("train") != -1 or inpFileName.find("Train") != -1:
+        setType = "train"
+    elif inpFileName.find("valid") != -1 or inpFileName.find("Valid") != -1:
+        setType = "valid"
+    elif inpFileName.find("test") != -1 or inpFileName.find("Test") != -1:
+        setType = "test"
+
+    outFileName = './Data/' + setType + 'Data.txt'
+
+    # print('\n', inpFileName)
+    # print(outFileName, '\n')
+
+    inpFile = open(inpFileName, "r")
+    outFile = open(outFileName, "w")
+
+    numLin = len(inpFile.readlines())
+    inpFile.seek(0)
+
+    for i in range(numLin):
+    # for i in range(2):
+        line = inpFile.readline()
+
+        splits = line.split(' ')
+        
+        # remove empty elements
+        while "" in splits:
+            splits.remove("")
+
+        # splits might contain only one element, which is '\n'
+        if len(splits) == 1 and splits[0] == '\n':
+            continue
+
+        # remove the new line character
+        if splits[-1] == '\n':
+            splits = splits[0:-1]
+        # remove new line char in case is contained in the last element
+        if splits[-1][-1] == '\n':
+            splits[-1] = splits[-1][0:-1]
+
+        # write the output
+        for j in range(len(splits)):
+            # check if splits[j] is a number
+            if isNumber(splits[j])==True:
+                outFile.write(splits[j] + ',' + 'O' + '\n')
+                continue
+            # check if splits[j] is number+dot
+            if isNumber(splits[j][0:-1])==True:
+                outFile.write(splits[j][0:-1] + ',' + 'PERIOD' + '\n')
+                continue
+            # check the case in which we have word+dot+word.
+            if splits[j][0:-1].find(".") != -1:
+                foo = splits[j].split('.')
+                outFile.write(foo[0] + ',' + 'PERIOD' + '\n')
+                outFile.write(foo[1] + ',' + 'O' + '\n')
+                continue
+            if splits[j][-1] == '.':
+                outFile.write(splits[j][0:-1] + ',' + 'PERIOD' + '\n')
+            else:
+                outFile.write(splits[j] + ',' + 'O' + '\n')
+
+    outFile.close()
+
+    # check the output file
+    inpFile = open(outFileName, "r")
+    numLin = len(inpFile.readlines())
+    inpFile.seek(0)
+    for i in range(numLin):
+        line = inpFile.readline()
+        splits = line.split(',')
+        if len(splits) > 2:
+            print("\n\nLine:   ", i+1)
+            print(splits, "\n\n")
+            sys.exit()
+    
+    return(outFileName)
