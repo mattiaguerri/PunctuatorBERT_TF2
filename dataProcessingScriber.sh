@@ -4,7 +4,7 @@ path=./DataScriber
 inp=scriberTrain
 out=scriberTrainPro
 
-# # Remove blank lines.
+# Remove blank lines.
 grep "\S" $path/$inp > $path/tmp_00
 
 # Remove parenthesis. Remove space+space.
