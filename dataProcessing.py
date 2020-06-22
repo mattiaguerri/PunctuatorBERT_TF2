@@ -1,15 +1,7 @@
 import numpy as np
 import torch
 from torch.utils.data import TensorDataset, DataLoader
-# import matplotlib.pyplot as plt
 import sys
-
-
-# def plot_batch_sizes(ds):
-    # batch_sizes = [batch.shape[0] for batch in ds]
-    # plt.bar(range(len(batch_sizes)), batch_sizes)
-    # plt.xlabel('Batch number')
-    # plt.ylabel('Batch size')
 
 
 def load_file(filename):
@@ -29,6 +21,30 @@ def encode_data(data, tokenizer, punctuation_enc):
     Y = []
     for line in data:
         word, punc = line.split(',')
+        punc = punc.strip()
+        tokens = tokenizer.tokenize(word)
+        x = tokenizer.convert_tokens_to_ids(tokens)
+        y = [punctuation_enc[punc]]
+        # one word can be encoded in more than one token
+        if len(x) > 0:
+            if len(x) > 1:
+                y = (len(x)-1)*[0]+y
+            X += x
+            Y += y
+    return X, Y
+
+
+def encodeData(data, tokenizer, punctuation_enc):
+    """
+    Takes in the dataset made of two columns separated by comma.
+    First column is a word, second column is what comes after the word (blank space, comma, period, etc.)
+    Output X, containing the token id of the words.
+    Output y, which contains what there is after the word.
+    """
+    X = []
+    Y = []
+    for line in data:
+        word, punc = line.split('\t')
         punc = punc.strip()
         tokens = tokenizer.tokenize(word)
         x = tokenizer.convert_tokens_to_ids(tokens)
@@ -62,7 +78,7 @@ def insert_target(x, segment_size):
     """
     Restructure x in order to have sequences of length equal to segment_size.
     Output X, an array with dimensions len(x) * segment_size.
-    In each segment the target is placed in the middle and replaced with a zero.
+    In each segment the target is placed in the middle in form of a zero.
     """
     X = []
     x_pad = x[-((segment_size-1)//2-1):]+x+x[:segment_size//2]
@@ -75,22 +91,12 @@ def insert_target(x, segment_size):
     return np.array(X)
 
 
-# def process_data(data, tokenizer, punctuation_enc, segment_size):
-#     X, y = encode_data(data, tokenizer, punctuation_enc)
-#     X = insert_target(X, segment_size)
-#     return X, y
-
-
 def isNumber(s):
     try:
         float(s)
         return True
     except ValueError:
         return False
-
-
-
-
 
 
 def processingIWSLT12(inpFileName):
@@ -171,10 +177,6 @@ def processingIWSLT12(inpFileName):
             # sys.exit()
     
     return(outFileName)
-
-
-
-
 
 
 def processingScriber00(inpFileName):
@@ -266,10 +268,6 @@ def processingScriber00(inpFileName):
     outFile.close()
     
     return(outFileName)
-
-
-
-
 
 
 def processingOPUS(inpFileName):
