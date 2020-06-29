@@ -10,30 +10,6 @@ def load_file(filename):
     return data
 
 
-def encode_data(data, tokenizer, punctuation_enc):
-    """
-    Takes in the dataset made of two columns separated by comma.
-    First column is a word, second column is what comes after the word (blank space, comma, period, etc.)
-    Output X, containing the token id of the words.
-    Output y, which contains what there is after the word.
-    """
-    X = []
-    Y = []
-    for line in data:
-        word, punc = line.split(',')
-        punc = punc.strip()
-        tokens = tokenizer.tokenize(word)
-        x = tokenizer.convert_tokens_to_ids(tokens)
-        y = [punctuation_enc[punc]]
-        # one word can be encoded in more than one token
-        if len(x) > 0:
-            if len(x) > 1:
-                y = (len(x)-1)*[0]+y
-            X += x
-            Y += y
-    return X, Y
-
-
 def encodeData(data, tokenizer, punctuation_enc):
     """
     Takes in the dataset made of two columns separated by comma.
@@ -44,7 +20,8 @@ def encodeData(data, tokenizer, punctuation_enc):
     X = []
     Y = []
     for line in data:
-        word, punc = line.split('\t')
+        word, punc = line.split(',')
+        # word, punc = line.split('\t')
         punc = punc.strip()
         tokens = tokenizer.tokenize(word)
         x = tokenizer.convert_tokens_to_ids(tokens)
@@ -342,10 +319,6 @@ def processingOPUS(inpFileName):
             sys.exit()
     
     return(outFileName)
-
-
-
-
 
 
 def processingIWSLT17(inpFileName):
