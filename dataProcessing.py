@@ -45,9 +45,12 @@ def encodeDataInfer(data, tokenizer):
         words = line.split(" ")
         words[-1] = words[-1].strip()  # get rid of \n at the end of the line
         for word in words:
-            token = tokenizer.tokenize(word)
-            tokenId = tokenizer.convert_tokens_to_ids(token)
-            X += tokenId
+            if word == "":
+                continue
+            else:
+                token = tokenizer.tokenize(word)
+                tokenId = tokenizer.convert_tokens_to_ids(token)
+                X += tokenId
     return X
 
 
@@ -401,10 +404,6 @@ def processingIWSLT17(inpFileName):
             sys.exit()
     
     return(outFileName)
-
-
-
-
 
 
 def processingScriber01(inpFileName):
