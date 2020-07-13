@@ -1,6 +1,8 @@
 #!/usr/bin/env python
 # coding: utf-8
 
+# # Restore Punctuoation In An Unpunctuated Text
+
 # In[1]:
 
 
@@ -27,7 +29,7 @@ tokenizer = AutoTokenizer.from_pretrained("jplu/tf-camembert-base", do_lower_cas
 
 ### path to weights
 # checkpointPath = "Models/20200530_161559/cp-001.ckpt"  # baseline model
-checkpointPath = "Models/20200601_090641/cp-006.ckpt"  # baseline model
+checkpointPath = "ModelsExpScriber/20200601_090641/cp-006.ckpt"
 
 
 # In[4]:
@@ -50,7 +52,7 @@ segment_size = 32
 batch_size = 2
 
 
-# ## Get the dataset
+# ## Get The Dataset
 
 # In[6]:
 
@@ -64,19 +66,19 @@ data = load_file(infSet)
 X_ = encodeDataInfer(data, tokenizer)
 X = insert_target(X_, segment_size)
 
-# # get only a fraction of dataset
-# n = 9600
+# ### Get Only A Fraction Of Dataset
+# n = 320
 # X = X[0:n]
 
 # instantiate tf.data.Dataset
 dataset = tf.data.Dataset.from_tensor_slices((X,)).batch(batch_size)
 
 
-# In[7]:
+# In[15]:
 
 
-print(len(X_))
-print(X.shape)
+print("Length Of X_ = ", len(X_))
+print("Shape Of X   = ", X.shape)
 
 
 # ### Build The Model
@@ -130,5 +132,5 @@ def restorePunctuation(X, preds, punDec, tokenizer, fileName):
 # In[13]:
 
 
-restorePunctuation(X_, preds, punDec, tokenizer, 'textRestored.txt')
+restorePunctuation(X_, preds, punDec, tokenizer, 'textRestored_01.txt')
 

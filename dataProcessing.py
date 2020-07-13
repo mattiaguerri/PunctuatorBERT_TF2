@@ -1,6 +1,4 @@
 import numpy as np
-import torch
-from torch.utils.data import TensorDataset, DataLoader
 import sys
 
 
@@ -54,19 +52,30 @@ def encodeDataInfer(data, tokenizer):
     return X
 
 
-def insert_target(x, segment_size):
+def insertTarget(x, sequenceSize):
     """
-    Restructure x in order to have sequences of length equal to segment_size.
-    Output X, an array with dimensions len(x) * segment_size.
-    In each segment the target is placed in the middle in form of a zero.
+    Restructure x in order to output a 2D array with dims (len(x), sequenceSize).
+    The target is placed in the middle of the sequence.
+    The target is a zero.
+    
+    Parameters:
+    ----------
+    x: list
+        List of tokens ids.
+    sequnceSize: integer
+        Size of the sequence to be input into the model.
+    
+    Returns:
+    X : numpy array
+        2D array with dims (len(x), sequenceSize)
     """
     X = []
-    x_pad = x[-((segment_size-1)//2-1):]+x+x[:segment_size//2]
+    x_pad = x[-((sequenceSize-1)//2-1):]+x+x[:sequenceSize//2]
 
-    for i in range(len(x_pad)-segment_size+2):
-        segment = x_pad[i:i+segment_size-1]
-        segment.insert((segment_size-1)//2, 0)
-        X.append(segment)
+    for i in range(len(x_pad)-sequenceSize+2):
+        sequence = x_pad[i:i+sequenceSize-1]
+        sequence.insert((sequenceSize-1)//2, 0)
+        X.append(sequence)
 
     return np.array(X)
 
