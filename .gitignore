@@ -5,10 +5,7 @@ Results
 ModelsExp
 Models
 
-DataIWSLT12
-DataIWSLT
-DataScriber
-Data
+./Data*
 
 .idea
 .venv

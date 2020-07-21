@@ -2,12 +2,6 @@ import numpy as np
 import sys
 
 
-def loadFile(filename):
-    with open(filename, 'r', encoding='utf-8') as f:
-        data = f.readlines()
-    return data
-
-
 def isNumber(s):
     try:
         float(s)
@@ -395,7 +389,7 @@ def insertTarget(x, sequenceSize):
     
     Parameters:
     ----------
-    x: list
+    x : list
         List of tokens ids.
     sequnceSize: integer
         Size of the sequence to be input into the model.
