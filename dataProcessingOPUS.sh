@@ -1,8 +1,16 @@
 #!/bin/bash
 
-path=./DataOPUS/Fr.txt
-inp=xafTrain
-out=xafTrain.pro
+# path=./DataOPUS/Fr.txt
+# inp=xafTrain
+# out=xafTrain.pro
+
+# path=./DataOPUS/Fr.txt/Splits
+# inp=test_00
+# out=test_00.pro
+
+path=$1
+inp=$2
+out=$3
 
 # Remove blank lines, convert upper case to lower case.
 grep "\S" $path/$inp | tr '[:upper:]' '[:lower:]' > $path/tmp_00

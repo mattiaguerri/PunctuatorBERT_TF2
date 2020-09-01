@@ -1,3 +1,30 @@
-DataOPUS downloaded from http://opus.nlpl.eu/OpenSubtitles-v2018.php
 
+
+DataCallsTexts
+100 raw calls transcripts that Nico sent to me on 20200624. The original file is CALLS_TEXTS.txt.
+
+
+
+
+DataOPUS 
+DataOPUS downloaded from http://opus.nlpl.eu/OpenSubtitles-v2018.php
+Go in the folder /home/mattiaguerri/Documents/PunctuatorBERTTensorFlow2/DataOPUS/Fr.txt
+I have split the original file (fr.txt) in smaller files (split_00, split_01, etc.).
+I split each smaller file in even smaller files (split_00_aa, split_00_ab, etc.).
+I process these even smaller files using the script dataProcessingOPUS.sh.
+The output is split_00_aa.pro, split_00_ab.pro, etc.
+When launching the training script, use processingOPUS in dataProcessing.py to further process these files.
+
+
+
+
+DataIWSLT17
 DataIWSLT17 downloaded from https://sites.google.com/site/iwsltevaluation2017/
+
+
+
+
+DataSciber
+It eventually happened that i used the file raw.processed.Test_01.txt as a validation set rather then a test set. Therefore,
+in the thesis, whenever i refer to the validation set for Scriber Data, i actually mean the file raw.processed.Test_01.txt. 
+

@@ -62,7 +62,7 @@ def processingIWSLT12(inpFileName):
             if splits[j][0:-1].find(",") != -1:
                 foo = splits[j].split(',')
                 outFile.write(foo[0] + '\t' + 'COMMA' + '\n')
-                outFile.write(foo[1] + '\t' + 'space' + '\n')
+                outFile.write(foo[1] + '\t' + 'SPACE' + '\n')
                 continue
             if splits[j][-1] == ',':
                 outFile.write(splits[j][0:-1] + '\t' + 'COMMA' + '\n')
@@ -359,13 +359,13 @@ def encodeData(data, tokenizer, punctuation_enc):
                 y = (len(x)-1)*[0]+y
             X += x
             Y += y
-    return X, Y
+    return X, np.asarray(Y)
 
 
 def encodeDataInfer(data, tokenizer):
     """
-    Takes in the data made of sentences, with words separated by blank spaces (no punctuation).
-    Output X, list containing the token id of the words.
+    Takes in the data made of sentences, with words separated by blank spaces (NO PUNCTUATION!!!).
+    Output X, list containing the token ids of the words.
     """
     X = []
     for line in data:

@@ -184,6 +184,7 @@ def positionalEncoding(sequence, depth):
     sequenceSize = sequence.shape[1]
     
     min_rate = 1/10000
+    min_rate = 1/100
 
     assert depth%2 == 0, "Depth must be even."
     angle_rate_exponents = np.linspace(0,1,depth//2)
